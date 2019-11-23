@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { ConnectedRouter } from "connected-react-router";
-import configureStore, { history } from "./store";
+import { Router } from "react-router-dom";
+import configureStore from "./store";
 import App from "./App";
 import { LoremIpsum } from "lorem-ipsum";
 
@@ -27,13 +27,13 @@ const preloadedState = Object.freeze({
   issues
 });
 
-const store = configureStore(preloadedState);
+const { store, history } = configureStore(preloadedState);
 
 ReactDOM.render(
   <Provider store={store}>
-    <ConnectedRouter history={history}>
+    <Router history={history}>
       <App />
-    </ConnectedRouter>
+    </Router>
   </Provider>,
   document.getElementById("root")
 );

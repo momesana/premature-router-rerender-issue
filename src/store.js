@@ -1,16 +1,32 @@
 import { createBrowserHistory } from "history";
-import { applyMiddleware, compose, createStore } from "redux";
-import { routerMiddleware } from 'connected-react-router'
-import createRootReducer from './reducers'
+import { applyMiddleware, compose, createStore, combineReducers } from "redux";
+import { createReduxHistoryContext } from "redux-first-history";
 
 export const history = createBrowserHistory();
 
+const {
+  createReduxHistory,
+  routerMiddleware,
+  routerReducer
+} = createReduxHistoryContext({
+  history
+});
+
+// pseudo-reducer as we pretty much solely rely on the preloaded state for issues
+const issueListReducer = (state = [], action) => state;
+
 export default function configureStore(preloadedState) {
   const store = createStore(
-    createRootReducer(history),
+    combineReducers({
+      router: routerReducer,
+      issues: issueListReducer
+    }),
     preloadedState,
-    compose(applyMiddleware(routerMiddleware(history)))
+    compose(applyMiddleware(routerMiddleware))
   );
 
-  return store;
+  return {
+    history: createReduxHistory(store),
+    store
+  };
 }
